@@ -1,0 +1,44 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: orders-db
+    environment:
+      POSTGRES_DB: orders
+      POSTGRES_USER: orders
+      POSTGRES_PASSWORD: orders
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orders -d orders"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: orders-app
+    environment:
+      DATABASE_URL: postgresql://orders:orders@db:5432/orders
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    # Hot-reload for local development.
+    # The source is mounted so edits take effect without rebuilding the image.
+    # Remove the volumes + command overrides for a production-like build.
+    volumes:
+      - ./app:/app/app
+    command:
+      [
+        "uvicorn", "app.main:app",
+        "--host", "0.0.0.0",
+        "--port", "8000",
+        "--reload"
+      ]
+
+volumes:
+  postgres_data:
