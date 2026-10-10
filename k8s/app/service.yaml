@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-app
+  namespace: order-system
+spec:
+  selector:
+    app: orders-app
+  ports:
+    - port: 80
+      targetPort: 8000
+  # ClusterIP — Traefik IngressRoute routes to this Service
+  type: ClusterIP

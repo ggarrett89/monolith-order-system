@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-app
+  namespace: order-system
+  labels:
+    app: orders-app
+    phase: "2"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: orders-app
+  template:
+    metadata:
+      labels:
+        app: orders-app
+    spec:
+      # Pull the image from GHCR.
+      # Make the package public at:
+      #   https://github.com/users/ggarrett89/packages/container/monolith-order-system/settings
+      # OR add imagePullSecrets (see docs/phase-02-kubernetes.md troubleshooting)
+      containers:
+        - name: orders-app
+          image: ghcr.io/ggarrett89/monolith-order-system:0.2.0
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: orders-app-config
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
