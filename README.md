@@ -194,30 +194,18 @@ curl -s http://localhost:8000/payments/user/1 | jq
 
 ---
 
-## Roadmap
+## Status (frozen since 2026-11-01)
 
-```
-Phase 1  ✅  Modular Monolith          ← you are here
-Phase 2      Kubernetes deployment
-Phase 3      Extract ms-orders + REST communication
-Phase 4      Extract ms-inventory + ms-payments
-Phase 5      Kafka — event-driven communication
-Phase 6      Saga pattern
-Phase 7      Observability (Prometheus + Grafana + Jaeger)
-Phase 8      Argo CD + Argo Rollouts
-Phase 9      AWS EKS
-```
+This repository is a **preparatory lab** and is no longer evolved.
+The monolith → microservices journey continues in a separate CRM-ERP project.
+See [ADR-0001 of the lab](https://github.com/ggarrett89/monolith-to-microservices/blob/main/docs/adr/ADR-0001-freeze-preparatory-lab.md).
 
----
-
-## Repository map
-
-| Repository | Description |
+| Item | State |
 |---|---|
-| `monolith-order-system` | This repo — Phase 1 |
-| `ms-orders` | Orders microservice (Phase 3+) |
-| `ms-inventory` | Inventory microservice (Phase 4+) |
-| `ms-payments` | Payments microservice (Phase 4+) |
-| `ms-users` | Users microservice (Phase 4+) |
-| `gitops-k8s` | Argo CD manifests for all services |
-| `infrastructure-lab` | Terraform + cluster configs |
+| Phase 1 — modular monolith | Done. Validated manually with the curl walkthrough above, including the payment-failure compensation (2026-10). |
+| `tests/` | Empty. No automated tests were written. |
+| `k8s/` manifests | Written for Phase 2 but **never applied** to a cluster. |
+| Phases 3–9 | Planned only, kept as historical notes in the lab repository. |
+
+The `ms-*`, `gitops-k8s` and `infrastructure-lab` repositories mentioned in early
+plans were never created and will not be.
